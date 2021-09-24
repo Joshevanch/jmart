@@ -3,14 +3,14 @@ package joshevanJmartFA;
 
 public class PriceTag
 {
-   public final double COMMISION_MULTIPLIER = 0.05;
-   public final double BOTTOM_PRICE = 20000;
-   public final double BOTTOM_FEE = 1000;
-   public double discount;
-   public double price;
+   public static final double COMMISION_MULTIPLIER = 0.05;
+   public static final double BOTTOM_PRICE = 20000;
+   public static final double BOTTOM_FEE = 1000;
+   public static double discount;
+   public static double price;
    public PriceTag(double price){
        this.price = price;
-       this.discount = 0;
+       discount = 0;
    }
    public PriceTag (double price, double discount){
        this.price = price;

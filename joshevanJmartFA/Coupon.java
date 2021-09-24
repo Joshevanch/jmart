@@ -9,13 +9,14 @@ public class Coupon
     public final double cut;
     public final Type type;
     public final double minimum;
-    private boolean used = false;
+    private boolean used;
     public Coupon (String name, int code, Type type, double cut, double minimum){
         this.name = name;
         this.code = code;
         this.cut = cut;
         this.type = type;
         this.minimum = minimum;
+        this.used = false;
     }
     public boolean isUsed(){
         return used;

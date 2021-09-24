@@ -14,11 +14,13 @@ public class ShipmentDuration
         this.bit = bit;
     }
     public ShipmentDuration (ShipmentDuration... args){
-        for (ShipmentDuration a:args){
+        
+        for (ShipmentDuration a:args){  
            this.bit = this.bit | a.bit;  
         }   
-           
+       
     }
+    
     public boolean isDuration (ShipmentDuration reference){
         if ((reference.bit & bit) == reference.bit){
             return true;
