@@ -20,4 +20,10 @@ public class Store extends Recognizable implements FileParser
     public boolean read (String content){
         return false;
     }
+    public String toString(){
+        name = "PT Madju Merdeka";
+        address = "Jl. Kukusan";
+        phoneNumber = "628777xxx";
+        return name;
+    }
 }

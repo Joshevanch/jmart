@@ -2,25 +2,14 @@ package joshevanJmartFA;
 
 
 
-public class Complaint extends Transaction implements FileParser
+public class Complaint extends Recognizable implements FileParser
 {
-  public int paymentId;
+  public String date;
   public String desc;
-  public Complaint (int id, Payment payment, String desc){
-      super (id, payment.buyerId, payment.storeId);
-      this.paymentId = payment.id;
+  public Complaint (int id, String desc){
+      super (id);
       this.desc = desc;
-  }
-  public Complaint (int id, int buyerId, int storeId, int paymentId, String desc){
-      super (id, buyerId, storeId);
-      this.paymentId = paymentId;
-      this.desc = desc;
-  }
-  public boolean validate (){
-      return false;
-  }
-  public Transaction perform (){
-      return null;
+      date = "September";
   }
   public boolean read (String content){
       return false;
