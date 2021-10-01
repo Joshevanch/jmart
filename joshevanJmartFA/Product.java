@@ -27,14 +27,6 @@ public class Product extends Recognizable implements FileParser
         return false;
     }
     public String toString(){
-        name = "Harry Potter";
-        weight = 1;
-        conditionUsed = false;
-        priceTag = new PriceTag(21000);
-        category = ProductCategory.BOOK;
-        rating = new ProductRating();
-        rating.insert (0);
-        storeId = 1;
-        return name;
+        return "Name: " +this.name+ "Weight: " +this.weight+ "conditionUsed: "+this.conditionUsed+"priceTag: "+this.priceTag.price+"Category: "+this.category+"rating: "+this.rating.getAverage()+"storeId: "+this.storeId ;
     }
 }

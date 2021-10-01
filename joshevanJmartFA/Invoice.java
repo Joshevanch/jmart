@@ -16,7 +16,7 @@ public abstract class Invoice extends Recognizable implements FileParser
         this.productId = productId;
         date = "September";
         this.rating = Rating.NONE;
-        this.status = status.WAITING_CONFIRMATION;
+        this.status = Status.WAITING_CONFIRMATION;
         complaintId = -1;
     }
     public abstract double getTotalPay();
@@ -26,7 +26,7 @@ public abstract class Invoice extends Recognizable implements FileParser
     enum Rating{
     NONE,
     BAD,
-    NEURAL,
+    NEUTRAL,
     GOOD;
     }
     enum Status{

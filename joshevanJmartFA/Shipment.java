@@ -8,6 +8,12 @@ public class Shipment implements FileParser
     public String receipt;
     public Duration duration;
     
+    public Shipment (String address, int shipmentCost, Duration duration, String receipt){
+        this.address = address;
+        this.shipmentCost = shipmentCost;
+        this.duration = duration;
+        this.receipt = receipt;
+    }
     public static class Duration{
     public static final Duration INSTANT  = new Duration ((byte)0);
     public static final Duration SAME_DAY = new Duration ((byte)2);
