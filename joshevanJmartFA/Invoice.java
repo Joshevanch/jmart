@@ -1,10 +1,10 @@
 package joshevanJmartFA;
-
+import java.util.Date;
 
 
 public abstract class Invoice extends Recognizable implements FileParser
 {
-    public String date;
+    public Date date;
     public int buyerId;
     public int productId;
     public int complaintId;
@@ -14,7 +14,7 @@ public abstract class Invoice extends Recognizable implements FileParser
         super (id);
         this.buyerId = buyerId;
         this.productId = productId;
-        date = "September";
+        date = new Date();
         this.rating = Rating.NONE;
         this.status = Status.WAITING_CONFIRMATION;
         complaintId = -1;
