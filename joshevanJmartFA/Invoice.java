@@ -1,5 +1,6 @@
 package joshevanJmartFA;
 import java.util.Date;
+import java.util.ArrayList;
 
 
 public abstract class Invoice extends Recognizable implements FileParser
@@ -10,6 +11,7 @@ public abstract class Invoice extends Recognizable implements FileParser
     public int complaintId;
     public Rating rating;
     public Status status;
+    public ArrayList <Record> history = new ArrayList <Record>();
     protected Invoice (int id, int buyerId, int productId){
         super (id);
         this.buyerId = buyerId;
@@ -22,6 +24,11 @@ public abstract class Invoice extends Recognizable implements FileParser
     public abstract double getTotalPay();
     public boolean read (String content){
         return false;
+    }
+    public class Record{
+        public Status status;
+        public Date date;
+        public String message;
     }
     enum Rating{
     NONE,

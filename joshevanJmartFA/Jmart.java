@@ -5,6 +5,8 @@ package joshevanJmartFA;
 public class Jmart
 {
     public static void main (String[] args){
+        Account joshevan = new Account(1001, "Joshevan", "Joshevan@ui.ac.id", "Joshevan123");
+        joshevan.validate();
      }
     // public static Product createProduct(){
         // PriceTag hargabaju = new PriceTag (100000, 10);
