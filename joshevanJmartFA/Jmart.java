@@ -5,8 +5,11 @@ package joshevanJmartFA;
 public class Jmart
 {
     public static void main (String[] args){
+    	System.out.println ("Hello from eclipse");
         Account joshevan = new Account(1001, "Joshevan", "Joshevan@ui.ac.id", "Joshevan123");
-        joshevan.validate();
+        System.out.println (joshevan.validate());
+        Complaint complaint = new Complaint (10, "produk jelek");
+        System.out.println (complaint.toString());
      }
     // public static Product createProduct(){
         // PriceTag hargabaju = new PriceTag (100000, 10);
