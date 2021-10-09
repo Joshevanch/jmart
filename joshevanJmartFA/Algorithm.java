@@ -2,121 +2,121 @@ package joshevanJmartFA;
 import java.util.*;
 
 public class Algorithm {
-	public static <T> int count (T[] array, T a) {
+	public static <T> int count (T[] array, T value) {
 		Iterator<T> iterator = Arrays.stream(array).iterator();
-		Predicate<T> predicate = a::equals;
-		return count (iterator, predicate);
+		Predicate<T> pred = value::equals;
+		return count (iterator, pred);
 	}
-	public static <T> int count (Iterable <T> iterable, T a) {
+	public static <T> int count (Iterable <T> iterable, T value) {
 		Iterator <T> iterator = iterable.iterator();
-		Predicate<T> predicate = a::equals;
-		return count (iterator, predicate);
+		Predicate<T> pred = value::equals;
+		return count (iterator, pred);
 	}
-	public static <T> int count (Iterator <T> iterator, T a) {
-		Predicate<T> predicate = a::equals;
-		return count (iterator, predicate);
+	public static <T> int count (Iterator <T> iterator, T value) {
+		Predicate<T> pred = value::equals;
+		return count (iterator, pred);
 	}
-	public static <T> int count (T[] array, Predicate<T> predicate) {
+	public static <T> int count (T[] array, Predicate<T> pred) {
 		Iterator<T> iterator = Arrays.stream(array).iterator();
-		return count (iterator, predicate);
+		return count (iterator, pred);
 	}
-	public static <T> int count (Iterable <T> iterable,  Predicate<T> predicate) {
+	public static <T> int count (Iterable <T> iterable,  Predicate<T> pred) {
 		Iterator <T> iterator = iterable.iterator();
-		return count(iterator, predicate);
+		return count(iterator, pred);
 	}
-	public static <T> int count (Iterator <T> iterator , Predicate<T> predicate) {
+	public static <T> int count (Iterator <T> iterator , Predicate<T> pred) {
 		int counter = 0;
 		while (iterator.hasNext()) {
-			if (predicate.predicate(iterator.next())) {
+			if (pred.predicate(iterator.next())) {
 				counter++;
 			}
 		}
 		return counter;
 	}
-	public static <T> T find (T[] array , T a) {
+	public static <T> T find (T[] array , T value) {
 		Iterator<T> iterator = Arrays.stream(array).iterator();
-		Predicate<T> predicate = a::equals;
-		return find (iterator, predicate);
+		Predicate<T> pred = value::equals;
+		return find (iterator, pred);
 	}
-	public static <T> T find (Iterable <T> iterable , T a) {
+	public static <T> T find (Iterable <T> iterable , T value) {
 		Iterator<T> iterator = iterable.iterator();
-		Predicate<T> predicate = a::equals;
-		return find (iterator, predicate);
+		Predicate<T> pred = value::equals;
+		return find (iterator, pred);
 	}
-	public static <T> T find (Iterator <T> iterator , T a) {
-		Predicate<T> predicate = a::equals;
-		return find (iterator, predicate);
+	public static <T> T find (Iterator <T> iterator , T value) {
+		Predicate<T> pred = value::equals;
+		return find (iterator, pred);
 	}
-	public static <T> T find (T[] array, Predicate <T> predicate) {
+	public static <T> T find (T[] array, Predicate <T> pred) {
 		Iterator<T> iterator = Arrays.stream(array).iterator();
-		return find (iterator, predicate);
+		return find (iterator, pred);
 	}
-	public static <T> T find (Iterable <T> iterable, Predicate <T> predicate) {
+	public static <T> T find (Iterable <T> iterable, Predicate <T> pred) {
 		Iterator<T> iterator = iterable.iterator();
-		return find (iterator, predicate);
+		return find (iterator, pred);
 	}
-	public static <T> T find (Iterator <T> iterator , Predicate<T> predicate) {
+	public static <T> T find (Iterator <T> iterator , Predicate<T> pred) {
 		while (iterator.hasNext()) {
 			T a = iterator.next();
-			if (predicate.predicate(a)) {
+			if (pred.predicate(a)) {
 				return a;
 			}
 		}
 		return null;
 	}
-	public static <T> boolean exists (T[] array, T a) {
+	public static <T> boolean exists (T[] array, T value) {
 		Iterator<T> iterator = Arrays.stream(array).iterator();
-		Predicate<T> predicate = a::equals;
-		return exists (iterator, predicate);
+		Predicate<T> pred = value::equals;
+		return exists (iterator, pred);
 	}
-	public static <T> boolean exists (Iterable <T> iterable, T a) {
+	public static <T> boolean exists (Iterable <T> iterable, T value) {
 		Iterator<T> iterator = iterable.iterator();
-		Predicate<T> predicate = a::equals;
-		return exists (iterator, predicate);
+		Predicate<T> pred = value::equals;
+		return exists (iterator, pred);
 	}
-	public static <T> boolean exists (Iterator <T> iterator, T a) {
-		Predicate<T> predicate = a::equals;
-		return exists (iterator, predicate);
+	public static <T> boolean exists (Iterator <T> iterator, T value) {
+		Predicate<T> pred = value::equals;
+		return exists (iterator, pred);
 	}
-	public static <T> boolean exists (T[] array, Predicate <T> predicate) {
+	public static <T> boolean exists (T[] array, Predicate <T> pred) {
 		Iterator<T> iterator = Arrays.stream(array).iterator();
-		return exists (iterator, predicate);
+		return exists (iterator, pred);
 	}
-	public static <T> boolean exists (Iterable <T> iterable, Predicate <T> predicate) {
+	public static <T> boolean exists (Iterable <T> iterable, Predicate <T> pred) {
 		Iterator<T> iterator = iterable.iterator();
-		return exists (iterator, predicate);
+		return exists (iterator, pred);
 	}
-	public static <T> boolean exists (Iterator <T> iterator , Predicate<T> predicate) {
+	public static <T> boolean exists (Iterator <T> iterator , Predicate<T> pred) {
 		while (iterator.hasNext()) {
 			T a = iterator.next();
-			if (predicate == a) {
+			if (pred == a) {
 				return true;
 			}
 		}
 		return false;
 	}
-	public static <T extends Comparable<T>> T max (T a, T b) {
-		int hasil = a.compareTo(b);
+	public static <T extends Comparable<T>> T max (T first, T second) {
+		int hasil = first.compareTo(second);
 		if (hasil<0) {
-			return b;
+			return second;
 		}
 		if (hasil>0) {
-			return a;
+			return first;
 		}
 		else {
-			return a;
+			return second;
 		}
 		}
-	public static <T extends Comparable<T>> T min (T a, T b) {
-		int hasil = a.compareTo(b);
+	public static <T extends Comparable<T>> T min (T first, T second) {
+		int hasil = first.compareTo(second);
 		if (hasil<0) {
-			return a;
+			return first;
 		}
 		if (hasil>0) {
-			return b;
+			return second;
 		}
 		else {
-			return a;
+			return first;
 		}
 		}
 }
