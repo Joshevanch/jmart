@@ -3,7 +3,7 @@ import java.util.Date;
 import java.util.ArrayList;
 
 
-public abstract class Invoice extends Recognizable implements FileParser
+public abstract class Invoice extends Recognizable
 {
     public Date date;
     public int buyerId;
@@ -12,8 +12,7 @@ public abstract class Invoice extends Recognizable implements FileParser
     public Rating rating;
     public Status status;
     public ArrayList <Record> history = new ArrayList <Record>();
-    protected Invoice (int id, int buyerId, int productId){
-        super (id);
+    protected Invoice (int buyerId, int productId){
         this.buyerId = buyerId;
         this.productId = productId;
         date = new Date();
@@ -22,9 +21,6 @@ public abstract class Invoice extends Recognizable implements FileParser
         complaintId = -1;
     }
     public abstract double getTotalPay();
-    public boolean read (String content){
-        return false;
-    }
     public class Record{
         public Status status;
         public Date date;

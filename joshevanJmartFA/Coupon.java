@@ -2,7 +2,7 @@ package joshevanJmartFA;
 
 
 
-public class Coupon extends Recognizable implements FileParser
+public class Coupon extends Recognizable
 {
     public final String name;
     public final int code;
@@ -10,33 +10,31 @@ public class Coupon extends Recognizable implements FileParser
     public final Type type;
     public final double minimum;
     private boolean used;
-    public Coupon (int id, String name, int code, Type type, double cut, double minimum){
-        super (id);
+    public Coupon (String name, int code, Type type, double cut, double minimum){
         this.name = name;
         this.code = code;
         this.cut = cut;
         this.type = type;
         this.minimum = minimum;
-        this.used = false;
     }
     public boolean isUsed(){
         return used;
     }
-    public boolean canApply (PriceTag priceTag){
-        if (priceTag.getAdjustedPrice()>minimum && used == false){
+    public boolean canApply (Treasury treasury){
+        if (treasury.getAdjustedPrice(100000,2000)>minimum && used == false){
             return true;
         }
         else{
             return false;
         }
     }
-    public double apply (PriceTag priceTag){
+    public double apply (Treasury treasury){
         used = true;
         if (this.type == Type.DISCOUNT){
-            return priceTag.getAdjustedPrice() - (cut/100 * priceTag.getAdjustedPrice());
+            return treasury.getAdjustedPrice(100000,2000) - (cut/100 * treasury.getAdjustedPrice(100000,2000));
         }
         else {
-            return priceTag.getAdjustedPrice() - priceTag.price;
+            return treasury.getAdjustedPrice(100000,2000) - 2000;
         }
     }
     public boolean read (String content){

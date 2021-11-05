@@ -1,28 +1,39 @@
 package joshevanJmartFA;
 
-
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.List;
+import com.google.gson.*;
 
 public class Jmart
 {
-    public static void main (String[] args){
-    	System.out.println ("Hello from eclipse");
-        Account joshevan = new Account(1001, "Joshevan", "Joshevan@ui.ac.id", "Joshevan123");
-        System.out.println (joshevan.validate());
-        Complaint complaint = new Complaint (10, "produk jelek");
-        System.out.println (complaint.toString());
-     }
-    // public static Product createProduct(){
-        // PriceTag hargabaju = new PriceTag (100000, 10);
-        // Product baju = new Product ("kemeja", 5, false, hargabaju, ProductCategory.FASHION);
-        // return baju; 
-    // }
-    // public static Coupon createCoupon(){
-        // Coupon kupon = new Coupon ("kupon1", 1, Coupon.Type.DISCOUNT , 5, 1000);
-        // return kupon;
-    // }
-    // public static ShipmentDuration createShipmentDuration(){
-        // ShipmentDuration durasi = new ShipmentDuration (ShipmentDuration.INSTANT, ShipmentDuration.SAME_DAY,
-// ShipmentDuration.NEXT_DAY);
-        // return durasi;
-    // }
+    class Country
+    {
+    	public String name;
+    	public int population;
+    	public List<String> listOfStates;
+    }
+    
+    public static void main (String[] args) 
+    {
+    	
+    	String filepath = "D:\\Tugas\\Semester 3\\Pemrograman Berorientasi Objek\\Praktikum\\jmart\\joshevanJmartFA\\city.json";
+    	Gson gson = new Gson();
+    	try
+    	{
+    		BufferedReader br = new BufferedReader (new FileReader(filepath));
+    		Country input = gson.fromJson(br, Country.class);
+    		System.out.println("name: "+ input.name);
+    		System.out.println("population: "+ input.population);
+    		System.out.println("states: ");
+    		input.listOfStates.forEach(state -> System.out.println(state));
+    	}
+    	catch (IOException e)
+    	{
+    		e.printStackTrace();
+    	}
+    }
+    
 }
+

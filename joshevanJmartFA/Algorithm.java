@@ -2,6 +2,9 @@ package joshevanJmartFA;
 import java.util.*;
 
 public class Algorithm {
+	private Algorithm () {
+		
+	}
 	public static <T> int count (T[] array, T value) {
 		Iterator<T> iterator = Arrays.stream(array).iterator();
 		Predicate<T> pred = value::equals;
