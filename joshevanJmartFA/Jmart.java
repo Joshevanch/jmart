@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
+import java.util.ArrayList;
 
 public class Jmart
 {
@@ -21,7 +22,7 @@ public class Jmart
     	return filteredByCategoryList;
     }
     public static List<Product> filterByPrice (List<Product> list, double minPrice, double maxPrice){
-    	List <Product> filteredByPriceList = null;
+    	List <Product> filteredByPriceList = new ArrayList <Product>();
     	if (maxPrice == 0 & minPrice == 0) {
     		filteredByPriceList = null;
     	}
