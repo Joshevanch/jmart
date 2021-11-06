@@ -2,7 +2,7 @@ package joshevanJmartFA;
 
 
 
-public class Product extends Recognizable
+public class Product extends Serializable
 {
     public int accountId;
     public ProductCategory category;

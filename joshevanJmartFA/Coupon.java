@@ -2,7 +2,7 @@ package joshevanJmartFA;
 
 
 
-public class Coupon extends Recognizable
+public class Coupon extends Serializable
 {
     public final String name;
     public final int code;
@@ -20,21 +20,21 @@ public class Coupon extends Recognizable
     public boolean isUsed(){
         return used;
     }
-    public boolean canApply (Treasury treasury){
-        if (treasury.getAdjustedPrice(100000,2000)>minimum && used == false){
+    public boolean canApply (double price, double discount){
+        if (Treasury.getAdjustedPrice(price,discount)>minimum && used == false){
             return true;
         }
         else{
             return false;
         }
     }
-    public double apply (Treasury treasury){
+    public double apply (double price, double discount){
         used = true;
         if (this.type == Type.DISCOUNT){
-            return treasury.getAdjustedPrice(100000,2000) - (cut/100 * treasury.getAdjustedPrice(100000,2000));
+            return Treasury.getAdjustedPrice(price,discount) - (cut/100 * Treasury.getAdjustedPrice(price,discount));
         }
         else {
-            return treasury.getAdjustedPrice(100000,2000) - 2000;
+            return Treasury.getAdjustedPrice(price,discount) - 2000;
         }
     }
     public boolean read (String content){

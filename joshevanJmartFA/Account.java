@@ -2,7 +2,7 @@ package joshevanJmartFA;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Account extends Recognizable
+public class Account extends Serializable
 {
    public static final String REGEX_EMAIL = "^(?!.*^[.])(?!.*[.]{2})[a-zA-Z0-9&._*~]+@(?![.-])[a-zA-Z0-9.-]+(?!.*$[.])$";
    public static final String REGEX_PASSWORD = "^(?=.{8,})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?!.*[\\s]{2}).*$";
