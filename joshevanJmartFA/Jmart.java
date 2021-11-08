@@ -53,7 +53,7 @@ public class Jmart
     	List <Product> list = read ("joshevanJmartFa\\randomProductList.json");
     	List <Product> filtered = filterByPrice (list,10000,20000);
     	List <Product> filtered1 = filterByAccountId (list,1, 0, 5);
-    	List <Product> filtered2= filterByName (list,"gtx", 0, 5);
+    	List <Product> filtered2= filterByName (list,"gtx", 1, 5);
     	filtered.forEach(product -> System.out.println(product.price));
     	filtered1.forEach(product -> System.out.println(product.name));
     	filtered2.forEach(product -> System.out.println(product.name));
@@ -78,13 +78,22 @@ public class Jmart
     
     private static List<Product> paginate (List<Product> list, int page, int pageSize, Predicate<Product>pred){
     	List<Product> paginatedList = new ArrayList<Product>();
+    	List<Product> paginatedList2 = new ArrayList<Product>();
+    	int i = 0;
     	for (Product a : list) {
     			if (pred.predicate(a)) {
     				paginatedList.add(a);
     			}
     	
     }
-    	return paginatedList;
+    	for (Product b : paginatedList) {
+			if (i>= ((page)*pageSize) && i<((page+1)*pageSize)) {
+				paginatedList2.add(b);
+				System.out.println(i);
+			}
+			i ++;
+}
+    	return paginatedList2;
     }
 }
 
