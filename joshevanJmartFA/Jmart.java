@@ -89,7 +89,6 @@ public class Jmart
     	for (Product b : paginatedList) {
 			if (i>= ((page)*pageSize) && i<((page+1)*pageSize)) {
 				paginatedList2.add(b);
-				System.out.println(i);
 			}
 			i ++;
 }
