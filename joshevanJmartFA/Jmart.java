@@ -9,6 +9,7 @@ import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import java.util.ArrayList;
 
+
 public class Jmart
 {
     class Country
@@ -47,13 +48,15 @@ public class Jmart
     	System.out.println("account id: "+ new Payment (-1, -1, -1, null).id);
     	System.out.println("account id: "+ new Payment (-1, -1, -1, null).id);
     	System.out.println("account id: "+ new Payment (-1, -1, -1, null).id);
-    		
-    	String filejson = "joshevanJmartFa\\randomProductList.json";
     	try
     	{
-    	List <Product> list = read (filejson);
-    	List <Product> filtered = filterByPrice (list, 10000.0, 20000.0);
+    	List <Product> list = read ("joshevanJmartFa\\randomProductList.json");
+    	List <Product> filtered = filterByPrice (list,10000,20000);
+    	List <Product> filtered1 = filterByAccountId (list,1, 0, 5);
+    	List <Product> filtered2= filterByName (list,"gtx", 0, 5);
     	filtered.forEach(product -> System.out.println(product.price));
+    	filtered1.forEach(product -> System.out.println(product.name));
+    	filtered2.forEach(product -> System.out.println(product.name));
     	}
     	catch (Throwable t)
     	{
@@ -66,6 +69,22 @@ public class Jmart
     	List <Product> list = Algorithm.<Product>collect (products, product->true);
     	return list;
     }
+    public static List<Product> filterByName (List<Product> list, String search, int page, int pageSize){
+    	return paginate (list, page, pageSize,product -> product.name.matches ("(?i).*" + search + ".*") );
+    }
+    public static List<Product> filterByAccountId (List<Product> list, int accountId, int page, int pageSize){
+    	return paginate (list, page, pageSize, product -> product.accountId == accountId);
+    }
     
+    private static List<Product> paginate (List<Product> list, int page, int pageSize, Predicate<Product>pred){
+    	List<Product> paginatedList = new ArrayList<Product>();
+    	for (Product a : list) {
+    			if (pred.predicate(a)) {
+    				paginatedList.add(a);
+    			}
+    	
+    }
+    	return paginatedList;
+    }
 }
 
