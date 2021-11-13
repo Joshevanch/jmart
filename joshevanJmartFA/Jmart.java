@@ -48,6 +48,17 @@ public class Jmart
     	System.out.println("account id: "+ new Payment (-1, -1, -1, null).id);
     	System.out.println("account id: "+ new Payment (-1, -1, -1, null).id);
     	System.out.println("account id: "+ new Payment (-1, -1, -1, null).id);
+    	try {
+    		String filepath = "a/b/c/account.json";
+    		JsonTable <Account> tableAccount = new JsonTable<>(Account.class, filepath);
+    		tableAccount.add(new Account ("name", "email", "password", 0));
+    		tableAccount.writeJson();
+    		tableAccount = new JsonTable<>(Account.class, filepath);
+    		tableAccount.forEach(account -> System.out.println(account.toString()));
+    	}
+    	catch (Throwable t){
+    		t.printStackTrace();
+    	}
     	try
     	{
     	List <Product> list = read ("joshevanJmartFa\\randomProductList.json");
