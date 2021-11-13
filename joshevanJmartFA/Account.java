@@ -24,4 +24,7 @@ public class Account extends Serializable
        Matcher matcherPass = patternPass.matcher (this.password);
        return (matcherEmail.find() && matcherPass.find());
    }
+   public String toString(){
+       return "name: " +name+ "\nemail: " +email+ "\npassword: "+password;
+   }
 }
