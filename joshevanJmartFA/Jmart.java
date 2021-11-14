@@ -81,7 +81,7 @@ public class Jmart
     	return list;
     }
     public static List<Product> filterByName (List<Product> list, String search, int page, int pageSize){
-    	return paginate (list, page, pageSize,product -> product.name.matches ("(?i).*" + search + ".*") );
+    	return Algorithm.<Product>paginate (list, page, pageSize, product -> product.name.matches ("(?i).*" + search + ".*") );
     }
     public static List<Product> filterByAccountId (List<Product> list, int accountId, int page, int pageSize){
     	return paginate (list, page, pageSize, product -> product.accountId == accountId);
