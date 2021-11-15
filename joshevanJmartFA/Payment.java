@@ -16,7 +16,7 @@ public class Payment extends Invoice
     public double getTotalPay(Product product){
         return product.price - product.discount;
     }
-    public class Record{
+    public static class Record{
         public Status status;
         public Date date;
         public String message;

@@ -29,6 +29,7 @@ public abstract class Invoice extends Serializable
     CANCELLED,
     ON_PROGRESS,
     ON_DELIVERY,
+    DELIVERED,
     COMPLAINT,
     FINISHED,
     FAILED;

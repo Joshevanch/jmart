@@ -5,105 +5,63 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import java.util.ArrayList;
+import java.util.*;
 
 
 public class Jmart
 {
-    class Country
-    {
-    	public String name;
-    	public int population;
-    	public List<String> listOfStates;
-    }
-    public static List<Product> filterByCategory (List<Product> list, ProductCategory category){
-    	List <Product> filteredByCategoryList = Algorithm.<Product>collect(list, product -> product.category == category);
-    	return filteredByCategoryList;
-    }
-    public static List<Product> filterByPrice (List<Product> list, double minPrice, double maxPrice){
-    	List <Product> filteredByPriceList = new ArrayList <Product>();
-    	if (maxPrice == 0 & minPrice == 0) {
-    		filteredByPriceList = null;
+    public static long DELIVERED_LIMIT_MS = 10;
+    public static long ON_DELIVERY_LIMIT_MS = 10;
+    public static long ON_PROGRESS_LIMIT_MS = 10;
+    public static long WAITING_CONF_LIMIT_MS = 10;
+    public static boolean paymentTimeKeeper (Payment payment) {
+    	Date date = new Date();
+    	long difftime = payment.history.get(payment.history.size() - 1).date.getTime() - date.getTime();
+    	long diff =	TimeUnit.MILLISECONDS.toMillis(difftime);
+    	if (payment.history.get(payment.history.size() - 1).status == Invoice.Status.WAITING_CONFIRMATION && diff >WAITING_CONF_LIMIT_MS ) {
+    		payment.history.add(new Payment.Record(Invoice.Status.FAILED, "Pengiriman gagal"));
     	}
-    	else if (maxPrice == 0) {
-    		filteredByPriceList = Algorithm.<Product>collect(list, product -> product.price >= minPrice);
+    	else if (payment.history.get(payment.history.size() - 1).status == Invoice.Status.ON_PROGRESS && diff >ON_PROGRESS_LIMIT_MS) {
+    		payment.history.add(new Payment.Record(Invoice.Status.FAILED, "Pengiriman gagal"));
     	}
-    	else if (minPrice == 0) {
-    		filteredByPriceList = Algorithm.<Product>collect(list, product -> product.price <= maxPrice);
+    	else if (payment.history.get(payment.history.size() - 1).status == Invoice.Status.ON_DELIVERY && diff >ON_DELIVERY_LIMIT_MS) {
+    		payment.history.add(new Payment.Record(Invoice.Status.DELIVERED, "Pengiriman berhasil"));
+    	}
+    	else if (payment.history.get(payment.history.size() - 1).status == Invoice.Status.ON_PROGRESS && diff >DELIVERED_LIMIT_MS) {
+    		payment.history.add(new Payment.Record(Invoice.Status.FINISHED, "Pengiriman berhasil"));
+    	}
+    	if (payment.history.get(payment.history.size() - 1).status == Invoice.Status.FAILED || payment.history.get(payment.history.size() - 1).status == Invoice.Status.FINISHED) {
+    		return true;
     	}
     	else {
-    		filteredByPriceList = Algorithm.<Product>collect(list, product -> product.price>=minPrice && product.price <= maxPrice);
+    		return false;
     	}
-    	return filteredByPriceList;
     }
-   
-    public static void main (String[] args) 
-    {
-    	System.out.println("account id: "+ new Account (null, null, null, -1).id);
-    	System.out.println("account id: "+ new Account (null, null, null, -1).id);
-    	System.out.println("account id: "+ new Account (null, null, null, -1).id);
-    	
-    	System.out.println("account id: "+ new Payment (-1, -1, -1, null).id);
-    	System.out.println("account id: "+ new Payment (-1, -1, -1, null).id);
-    	System.out.println("account id: "+ new Payment (-1, -1, -1, null).id);
+    public static void main (String [] args) {
     	try {
-    		String filepath = "a/b/c/account.json";
-    		JsonTable <Account> tableAccount = new JsonTable<>(Account.class, filepath);
-    		tableAccount.add(new Account ("name", "email", "password", 0));
-    		tableAccount.writeJson();
-    		tableAccount = new JsonTable<>(Account.class, filepath);
-    		tableAccount.forEach(account -> System.out.println(account.toString()));
+    		JsonTable <Payment> table = new JsonTable <> (Payment.class, "joshevanJmartFa\\randomPaymentList.json");
+    		ObjectPoolThread <Payment> paymentPool = new ObjectPoolThread<Payment> ("Thread--pp", Jmart::paymentTimeKeeper );
+    		paymentPool.start();
+    		table.forEach(payment -> paymentPool.add(payment));
+    		while (paymentPool.size() !=0);
+    		paymentPool.exit();
+    		while (paymentPool.isAlive());
+    		System.out.println("Thread exited successfully");
+    		Gson gson = new Gson ();
+    		table.forEach(payment ->{
+    			String history = gson.toJson(payment.history);
+    			System.out.println(history);
+    		});
     	}
-    	catch (Throwable t){
+    	catch (Throwable t) {
     		t.printStackTrace();
     	}
-    	try
-    	{
-    	List <Product> list = read ("joshevanJmartFa\\randomProductList.json");
-    	List <Product> filtered = filterByPrice (list,10000,20000);
-    	List <Product> filtered1 = filterByAccountId (list,1, 0, 5);
-    	List <Product> filtered2= filterByName (list,"gtx", 1, 5);
-    	filtered.forEach(product -> System.out.println(product.price));
-    	filtered1.forEach(product -> System.out.println(product.name));
-    	filtered2.forEach(product -> System.out.println(product.name));
-    	}
-    	catch (Throwable t)
-    	{
-    		t.printStackTrace();
-    	}
-    }
-    public static List<Product> read (String filepath) throws FileNotFoundException {
-    	JsonReader json = new JsonReader(new FileReader (filepath));
-    	Product [] products = new Gson().fromJson(json, Product[].class);
-    	List <Product> list = Algorithm.<Product>collect (products, product->true);
-    	return list;
-    }
-    public static List<Product> filterByName (List<Product> list, String search, int page, int pageSize){
-    	return Algorithm.<Product>paginate (list, page, pageSize, product -> product.name.matches ("(?i).*" + search + ".*") );
-    }
-    public static List<Product> filterByAccountId (List<Product> list, int accountId, int page, int pageSize){
-    	return paginate (list, page, pageSize, product -> product.accountId == accountId);
-    }
     
-    private static List<Product> paginate (List<Product> list, int page, int pageSize, Predicate<Product>pred){
-    	List<Product> paginatedList = new ArrayList<Product>();
-    	List<Product> paginatedList2 = new ArrayList<Product>();
-    	int i = 0;
-    	for (Product a : list) {
-    			if (pred.predicate(a)) {
-    				paginatedList.add(a);
-    			}
-    	
-    }
-    	for (Product b : paginatedList) {
-			if (i>= ((page)*pageSize) && i<((page+1)*pageSize)) {
-				paginatedList2.add(b);
-			}
-			i ++;
-}
-    	return paginatedList2;
     }
 }
 
