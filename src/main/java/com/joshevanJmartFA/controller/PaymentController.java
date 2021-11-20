@@ -15,6 +15,7 @@ public class PaymentController implements BasicGetController <Payment>{
 	public static ObjectPoolThread<Payment> poolThread;
 	static {
 		poolThread = new ObjectPoolThread<Payment>("name", PaymentController::timekeeper);
+		poolThread.start();
 	}
 	public JsonTable<Payment> getJsonTable(){
 		return PaymentController.paymentTable;

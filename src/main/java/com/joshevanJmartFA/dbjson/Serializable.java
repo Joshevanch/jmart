@@ -3,34 +3,27 @@ import java.util.HashMap;
 
 public class Serializable implements Comparable<Serializable>
 {
+    private static HashMap <Class<?>, Integer> mapCounter = new HashMap<>();
     public final int id;
-    private static HashMap <Class<?>, Integer> mapCounter = new HashMap();
     protected Serializable(){
         Integer counter = mapCounter.get(getClass());
-        if (mapCounter.get(getClass()) == null){
-        	counter = 0;
-        	mapCounter.put(getClass(), 0);
-        	id = 0;
-        }
-        else {
-        	counter ++;
-            this.id = counter;	
-            mapCounter.put(getClass(), counter);
-        }
+        counter = counter == null ? 0 : counter + 1;
+        mapCounter.put(getClass(), counter);
+        this.id = counter;
         
     }
-    public static <T extends Serializable>int setClosingId(Class<T> clazz, int id) {
+    public static <T extends Serializable>Integer setClosingId(Class<T> clazz, int id) {
     	return mapCounter.put(clazz, id);
     }
-    public static <T extends Serializable>int getClosingId(Class <T> clazz) {
+    public static <T extends Serializable>Integer getClosingId(Class <T> clazz) {
     	return mapCounter.get(clazz);
     }
     public boolean equals (Object other){
-    return (other instanceof Serializable && this.id == ((Serializable)other).id);
+    return (other instanceof Serializable && id == ((Serializable)other).id);
     }
     
     public boolean equals (Serializable other){
-        return (this.id == other.id);
+        return (id == other.id);
     }
     public int compareTo(Serializable other) {
     return Integer.compare(this.id, other.id);
