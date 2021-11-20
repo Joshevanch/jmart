@@ -1,6 +1,8 @@
 package com.joshevanJmartFA;
 import java.util.Date;
 
+import com.joshevanJmartFA.dbjson.Serializable;
+
 
 public abstract class Invoice extends Serializable
 {

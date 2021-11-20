@@ -1,12 +1,13 @@
 package com.joshevanJmartFA;
 
 import java.io.BufferedReader;
+import com.joshevanJmartFA.dbjson.*;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
+import com.google.gson.*;	
 import java.util.ArrayList;
 import java.util.*;
 import org.springframework.boot.SpringApplication;
@@ -50,7 +51,9 @@ public class Jmart
     	}
     }
     public static void main (String [] args) {
+    	JsonDBEngine.Run(Jmart.class);
     	SpringApplication.run(Jmart.class, args);
+    	Runtime.getRuntime().addShutdownHook(new Thread(() -> JsonDBEngine.join()));
     }
     	/*
     	try {

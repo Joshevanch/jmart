@@ -1,6 +1,6 @@
 package com.joshevanJmartFA;
 
-
+import com.joshevanJmartFA.dbjson.Serializable;
 
 public class Product extends Serializable
 {
