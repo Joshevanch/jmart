@@ -6,6 +6,8 @@ import com.joshevanJmartFA.dbjson.*;
 import org.springframework.web.bind.annotation.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 @RestController
 @RequestMapping("/account")
@@ -22,7 +24,22 @@ public class AccountController implements BasicGetController <Account>
 	}
 	@PostMapping("/login")
 	Account login (String email, String password) {
-	Account account = Algorithm.<Account>find(accountTable, a -> a.email == email && a.password == password);
+		String generatedPassword = null;
+		try {
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			md.update(password.getBytes());
+			byte [] bytes = md.digest();
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i<bytes.length;i++) {
+				sb.append(Integer.toString((bytes[i] & 0xFF) + 0x100,16).substring(1));
+			}
+			generatedPassword = sb.toString();
+		}
+		catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		final String generatedPassword1 = generatedPassword;
+	Account account = Algorithm.<Account>find(accountTable, a -> a.email == email && generatedPassword1==a.password);
 		if (account == null) {
 			return null;
 		}
@@ -32,7 +49,21 @@ public class AccountController implements BasicGetController <Account>
 	}
 	@PostMapping("/register")
 	Account register (String name, String email, String password) {
-		Account a = new Account (name, email, password, 0);
+		String generatedPassword = null;
+		try {
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			md.update(password.getBytes());
+			byte [] bytes = md.digest();
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i<bytes.length;i++) {
+				sb.append(Integer.toString((bytes[i] & 0xFF) + 0x100,16).substring(1));
+			}
+			generatedPassword = sb.toString();
+		}
+		catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		Account a = new Account (name, email, generatedPassword, 0);
 		Matcher matcherEmail = REGEX_PATTERN_EMAIL.matcher(a.email);
 	    Matcher matcherPass = REGEX_PATTERN_PASSWORD.matcher(a.password);
 	    if (a.name.isBlank()==false && matcherEmail.find() == true && matcherPass.find()==true) {
