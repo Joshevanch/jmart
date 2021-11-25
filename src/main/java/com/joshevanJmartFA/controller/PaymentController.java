@@ -2,6 +2,7 @@ package com.joshevanJmartFA.controller;
 
 import org.springframework.web.bind.annotation.*;
 import com.joshevanJmartFA.*;
+import com.joshevanJmartFA.Payment.Record;
 import com.joshevanJmartFA.dbjson.*;
 
 @RestController
@@ -21,20 +22,55 @@ public class PaymentController implements BasicGetController <Payment>{
 		return PaymentController.paymentTable;
 	}
 	@PostMapping("/create")
-	boolean create (int id) {
-		return true;
+	boolean accept (int id) {
+		Payment payment = Algorithm.<Payment>find(paymentTable, a->a.id == id);
+		if (payment != null && payment.history.get(payment.history.size() - 1).status == Invoice.Status.WAITING_CONFIRMATION) {
+			payment.history.add(new Record (Invoice.Status.ON_PROGRESS, "On Progress"));
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 	@PostMapping("/{id}/accept")
-	boolean accept (int id) {
-		return true;
+	Payment create (int buyerId, int productId, int productCount, String shipmentAddress, byte shipmentPlan) {
+		Account account = Algorithm.<Account>find(AccountController.accountTable, a-> a.id == buyerId);
+		Product product = Algorithm.<Product>find(ProductController.productTable, a-> a.id == productId);
+		Payment payment = new Payment (buyerId, productId, productCount, new Shipment (shipmentAddress, 0, shipmentPlan, null));
+		double price = payment.getTotalPay(product);
+		if (account != null && product != null && account.balance >= price) {
+			account.balance = account.balance - price;
+			payment.history.add(new Record (Invoice.Status.WAITING_CONFIRMATION, "Waiting Confirmation"));
+			paymentTable.add(payment);
+			poolThread.add(payment);
+			return payment;
+		}
+		else {
+			return null;
+		}
 	}
 	@PostMapping("/{id}/cancel")
 	boolean cancel (int id) {
-		return true;
+		Payment payment = Algorithm.<Payment>find(paymentTable, a->a.id == id);
+		if (payment != null && payment.history.get(payment.history.size() - 1).status == Invoice.Status.WAITING_CONFIRMATION) {
+			payment.history.add(new Record (Invoice.Status.CANCELLED, "Cancelled"));
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 	@PostMapping("/{id}/submit")
-	boolean submit (int id) {
-		return true;
+	boolean submit (int id, String receipt) {
+		Payment payment = Algorithm.<Payment>find(paymentTable, a->a.id == id);
+		if (payment != null && payment.history.get(payment.history.size() - 1).status == Invoice.Status.ON_PROGRESS && payment.shipment.receipt.isBlank() == true) {
+			payment.shipment.receipt = receipt;
+			payment.history.add(new Record (Invoice.Status.ON_DELIVERY, "On Delivery"));
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 	private static boolean timekeeper (Payment payment) {
 		return Jmart.paymentTimeKeeper(payment);

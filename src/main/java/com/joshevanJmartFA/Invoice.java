@@ -20,13 +20,13 @@ public abstract class Invoice extends Serializable
     }
     public abstract double getTotalPay(Product product);
     
-    enum Rating{
+    public static enum Rating{
     NONE,
     BAD,
     NEUTRAL,
     GOOD;
     }
-    enum Status{
+    public static enum Status{
     WAITING_CONFIRMATION,
     CANCELLED,
     ON_PROGRESS,
