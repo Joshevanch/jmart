@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.web.bind.annotation.*;
 
 public interface BasicGetController<T extends Serializable>{
-	@GetMapping("/id")
-	public default T getById (int id) {
+	@GetMapping("/{id}")
+	public default T getById (@PathVariable int id) {
 		T t = Algorithm.<T>find(getJsonTable(), a -> a.id == id);
 		if (t == null) {
 			return null;

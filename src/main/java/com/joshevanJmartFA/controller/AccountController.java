@@ -18,12 +18,13 @@ public class AccountController implements BasicGetController <Account>
 	public static final Pattern REGEX_PATTERN_EMAIL = Pattern.compile (REGEX_EMAIL);
 	public static final Pattern REGEX_PATTERN_PASSWORD = Pattern.compile (REGEX_PASSWORD);
 	
-	public static @JsonAutowired(filepath = "D:\\Tugas\\Semester 3\\Pemrograman Berorientasi Objek\\Praktikum\\jmart\\src\\main\\java\\com\\joshevanJmartFA\\a\\b\\c\\account.json", value = Account.class) JsonTable<Account> accountTable;
+	public static @JsonAutowired(filepath = "a/b/c/account.json", value = Account.class) JsonTable<Account> accountTable;
 	public JsonTable<Account> getJsonTable(){
 		return AccountController.accountTable;
 	}
 	@PostMapping("/login")
-	Account login (String email, String password) {
+	Account login (@RequestParam String email, @RequestParam String password) {
+		Account account = Algorithm.<Account>find(accountTable, a -> a.email.equals(email));
 		String generatedPassword = null;
 		try {
 			MessageDigest md = MessageDigest.getInstance("MD5");
@@ -38,43 +39,45 @@ public class AccountController implements BasicGetController <Account>
 		catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
-		final String generatedPassword1 = generatedPassword;
-	Account account = Algorithm.<Account>find(accountTable, a -> a.email == email && generatedPassword1==a.password);
-		if (account == null) {
-			return null;
+	if (account != null && account.password.equals(generatedPassword) ) {
+			return account;
 		}
 		else {
-			return account;
+			return null;
 		}
 	}
 	@PostMapping("/register")
-	Account register (String name, String email, String password) {
-		String generatedPassword = null;
-		try {
-			MessageDigest md = MessageDigest.getInstance("MD5");
-			md.update(password.getBytes());
-			byte [] bytes = md.digest();
-			StringBuilder sb = new StringBuilder();
-			for (int i = 0; i<bytes.length;i++) {
-				sb.append(Integer.toString((bytes[i] & 0xFF) + 0x100,16).substring(1));
+	Account register (@RequestParam String name, @RequestParam String email,@RequestParam  String password) {
+		Matcher matcherEmail = REGEX_PATTERN_EMAIL.matcher(email);
+	    Matcher matcherPass = REGEX_PATTERN_PASSWORD.matcher(password);
+	    if (name.isBlank()) {
+	    	return null;
+	    }
+	    else if (matcherEmail.find() && matcherPass.find()) {
+	    	String generatedPassword = null;
+			try {
+				MessageDigest md = MessageDigest.getInstance("MD5");
+				md.update(password.getBytes());
+				byte [] bytes = md.digest();
+				StringBuilder sb = new StringBuilder();
+				for (int i = 0; i<bytes.length;i++) {
+					sb.append(Integer.toString((bytes[i] & 0xFF) + 0x100,16).substring(1));
+				}
+				generatedPassword = sb.toString();
 			}
-			generatedPassword = sb.toString();
-		}
-		catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		}
-		Account a = new Account (name, email, generatedPassword, 0);
-		Matcher matcherEmail = REGEX_PATTERN_EMAIL.matcher(a.email);
-	    Matcher matcherPass = REGEX_PATTERN_PASSWORD.matcher(a.password);
-	    if (a.name.isBlank()==false && matcherEmail.find() == true && matcherPass.find()==true) {
-	    	return a;
+			catch (NoSuchAlgorithmException e) {
+				e.printStackTrace();
+			}
+			Account a = new Account (name, email, generatedPassword, 0);
+			accountTable.add(a);
+			return a;
 	    }
 	    else {
 	    	return null;
 	    }
 	}
 	@PostMapping("/{id}/registerStore")
-	Store registerStore (int id,String name, String address, String phoneNumber) {
+	Store registerStore (@PathVariable int id,@RequestParam String name,@RequestParam String address,@RequestParam String phoneNumber) {
 		Store store = new Store (name,address,phoneNumber,0);
 		Account account = Algorithm.<Account>find(accountTable, a -> a.id == id);
 		if (account == null || account.store !=null) {

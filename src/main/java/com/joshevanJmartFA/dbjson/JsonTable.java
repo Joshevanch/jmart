@@ -13,20 +13,17 @@ public class JsonTable<T> extends Vector<T> {
 		this.filepath = filepath;
 		try {
 			Class <T[]> array = (Class <T[]>) Array.newInstance(clazz, 0).getClass();
-			T[] result = JsonTable.readJson(array, filepath);
+			T[] result = readJson(array, filepath);
 			if (result != null) {
 				Collections.addAll(this, result);
 			}
 		}
 		catch (FileNotFoundException e){
-			File file = new File (filepath);
-			File directory = file.getParentFile();
-			directory.mkdirs();
-			file.createNewFile();
+			
 		}
 	}
 	public static <T> T readJson (Class <T> clazz, String filepath) throws FileNotFoundException{
-		JsonReader json = new JsonReader(new FileReader (filepath));
+		final JsonReader json = new JsonReader(new FileReader (filepath));
 		T t = gson.fromJson(json, clazz);
 		return t;
 	}
@@ -35,8 +32,16 @@ public class JsonTable<T> extends Vector<T> {
 		writeJson (this, this.filepath);
 	}
 	public static void writeJson (Object object, String filepath) throws IOException{
-		FileWriter file = new FileWriter(filepath);
-		file.write (gson.toJson(object));
-		file.close ();	
+		File file = new File(filepath);
+        if (!file.exists())
+        {
+            File parent = file.getParentFile();
+            if (parent != null)
+                parent.mkdirs();
+            file.createNewFile();
+        }
+        final FileWriter writer = new FileWriter(filepath);
+        writer.write(gson.toJson(object));
+        writer.close();
 	}
 }

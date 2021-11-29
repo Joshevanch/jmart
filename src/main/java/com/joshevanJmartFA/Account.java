@@ -17,7 +17,6 @@ public class Account extends Serializable
        this.name = name;
        this.email = email;
        this.password = password;
-       this.balance = balance;
    }
    public boolean validate(){
        Pattern patternEmail = Pattern.compile (REGEX_EMAIL);
