@@ -50,7 +50,7 @@ public class AccountController implements BasicGetController <Account>
 	Account register (@RequestParam String name, @RequestParam String email,@RequestParam  String password) {
 		Matcher matcherEmail = REGEX_PATTERN_EMAIL.matcher(email);
 	    Matcher matcherPass = REGEX_PATTERN_PASSWORD.matcher(password);
-	    if (name.isBlank()) {
+	    if (name.isBlank() || ((Algorithm.<Account>find(accountTable,account-> account.email.equals(email) )) != null)) {
 	    	return null;
 	    }
 	    else if (matcherEmail.find() && matcherPass.find()) {
@@ -89,7 +89,7 @@ public class AccountController implements BasicGetController <Account>
 		}
 	}
 	@PostMapping("/{id}/topUp")
-	Boolean topUp (int id, double balance) {
+	Boolean topUp (@PathVariable int id, @RequestParam double balance) {
 	Account account = Algorithm.<Account>find(accountTable, a -> a.id == id);
 	if (account == null) {
 		return false;
