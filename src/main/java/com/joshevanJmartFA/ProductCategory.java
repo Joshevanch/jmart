@@ -26,4 +26,5 @@ public enum ProductCategory
     PROPERTY,
     TRAVEL,
     WEDDING,
+    NONE,
 }

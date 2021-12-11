@@ -55,7 +55,7 @@ public class AccountController implements BasicGetController <Account>
 	    }
 	    else if (matcherEmail.find() && matcherPass.find()) {
 	    	String generatedPassword = null;
-			try {
+			try {	
 				MessageDigest md = MessageDigest.getInstance("MD5");
 				md.update(password.getBytes());
 				byte [] bytes = md.digest();

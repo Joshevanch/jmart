@@ -17,7 +17,7 @@ public interface BasicGetController<T extends Serializable>{
 	}
 	
 	@RequestMapping(value = "/page", method = RequestMethod.GET)
-	public default List<T> getPage (@RequestParam(defaultValue = "5")int page,@RequestParam(defaultValue = "5") int pageSize){
+	public default List<T> getPage (@RequestParam int page,@RequestParam(defaultValue = "5") int pageSize){
 		return Algorithm.paginate(getJsonTable(),page,pageSize,object->true);
 	}
 	public abstract JsonTable<T> getJsonTable();
