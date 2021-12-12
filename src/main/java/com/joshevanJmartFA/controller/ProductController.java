@@ -38,10 +38,10 @@ public class ProductController implements BasicGetController<Product> {
 			return Algorithm.<Product>paginate (productTable, page, pageSize, product -> product.name.matches ("(?i).*" + search + ".*") && product.category == category && product.conditionUsed == conditionUsed);
 		}
 		else if (category == ProductCategory.NONE) {
-			return Algorithm.<Product>paginate (productTable, page, pageSize, product -> product.category == category && product.conditionUsed == conditionUsed);
+			return Algorithm.<Product>paginate (productTable, page, pageSize, product -> product.name.matches ("(?i).*" + search + ".*") && product.price>=minPrice && product.price <= maxPrice && product.conditionUsed == conditionUsed);
 		}
 		else {
-			return Algorithm.<Product>paginate (productTable, page, pageSize, product -> product.name.matches ("(?i).*" + search + ".*") && (product.price>=minPrice && product.price <= maxPrice) && product.category == category && product.conditionUsed == conditionUsed);
+			return Algorithm.<Product>paginate (productTable, page, pageSize, product -> product.name.matches ("(?i).*" + search + ".*") && product.price>=minPrice && product.price <= maxPrice && product.category == category && product.conditionUsed == conditionUsed);
 		}
 		}
 }

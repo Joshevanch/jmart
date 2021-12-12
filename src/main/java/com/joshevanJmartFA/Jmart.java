@@ -16,40 +16,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class Jmart
 {
-    public static long DELIVERED_LIMIT_MS = 10;
-    public static long ON_DELIVERY_LIMIT_MS = 10;
-    public static long ON_PROGRESS_LIMIT_MS = 10;
-    public static long WAITING_CONF_LIMIT_MS = 10;
-    public static boolean paymentTimeKeeper (Payment payment) {
-    	if (payment.history.size()>0) {
-    		Date date = new Date();
-        	long difftime = payment.history.get(payment.history.size() - 1).date.getTime() - date.getTime();
-        	long diff =	TimeUnit.MILLISECONDS.toMillis(difftime);
-    	if (payment.history.get(payment.history.size() - 1).status == Invoice.Status.WAITING_CONFIRMATION && diff >WAITING_CONF_LIMIT_MS ) {
-    		payment.history.add(new Payment.Record(Invoice.Status.FAILED, "Pengiriman gagal"));
-    	}
-    	else if (payment.history.get(payment.history.size() - 1).status == Invoice.Status.ON_PROGRESS && diff >ON_PROGRESS_LIMIT_MS) {
-    		payment.history.add(new Payment.Record(Invoice.Status.FAILED, "Pengiriman gagal"));
-    	}
-    	else if (payment.history.get(payment.history.size() - 1).status == Invoice.Status.ON_DELIVERY && diff >ON_DELIVERY_LIMIT_MS) {
-    		payment.history.add(new Payment.Record(Invoice.Status.DELIVERED, "Pengiriman berhasil"));
-    	
-    	}
-    	else if (payment.history.get(payment.history.size() - 1).status == Invoice.Status.ON_PROGRESS && diff >DELIVERED_LIMIT_MS) {
-    		payment.history.add(new Payment.Record(Invoice.Status.FINISHED, "Pengiriman berhasil"));
-    		
-    	}
-    	if (payment.history.get(payment.history.size()-1).status == Invoice.Status.FINISHED || payment.history.get(payment.history.size()-1).status == Invoice.Status.FAILED) {
-    		return true;
-    	}
-    	else {
-    		return false;
-    	}
-    	}
-    	else {
-    		return true;
-    	}
-    }
     public static void main (String [] args) {
     	JsonDBEngine.Run(Jmart.class);
     	SpringApplication.run(Jmart.class, args);

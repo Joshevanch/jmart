@@ -1,5 +1,10 @@
 package com.joshevanJmartFA.controller;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import org.springframework.web.bind.annotation.*;
 import com.joshevanJmartFA.*;
 import com.joshevanJmartFA.Payment.Record;
@@ -21,8 +26,8 @@ public class PaymentController implements BasicGetController <Payment>{
 	public JsonTable<Payment> getJsonTable(){
 		return PaymentController.paymentTable;
 	}
-	@PostMapping("/create")
-	boolean accept (int id) {
+	@PostMapping("/{id}/accept")
+	boolean accept (@PathVariable int id) {
 		Payment payment = Algorithm.<Payment>find(paymentTable, a->a.id == id);
 		if (payment != null && payment.history.get(payment.history.size() - 1).status == Invoice.Status.WAITING_CONFIRMATION) {
 			payment.history.add(new Record (Invoice.Status.ON_PROGRESS, "On Progress"));
@@ -32,12 +37,12 @@ public class PaymentController implements BasicGetController <Payment>{
 			return false;
 		}
 	}
-	@PostMapping("/{id}/accept")
-	Payment create (int buyerId, int productId, int productCount, String shipmentAddress, byte shipmentPlan) {
+	@PostMapping("/create")
+	Payment create (@RequestParam int buyerId, @RequestParam int productId, @RequestParam int productCount, @RequestParam String shipmentAddress, @RequestParam byte shipmentPlan) {
 		Account account = Algorithm.<Account>find(AccountController.accountTable, a-> a.id == buyerId);
 		Product product = Algorithm.<Product>find(ProductController.productTable, a-> a.id == productId);
 		Payment payment = new Payment (buyerId, productId, productCount, new Shipment (shipmentAddress, 0, shipmentPlan, null));
-		double price = payment.getTotalPay(product);
+		double price = productCount*payment.getTotalPay(product);
 		if (account != null && product != null && account.balance >= price) {
 			account.balance = account.balance - price;
 			payment.history.add(new Record (Invoice.Status.WAITING_CONFIRMATION, "Waiting Confirmation"));
@@ -50,7 +55,7 @@ public class PaymentController implements BasicGetController <Payment>{
 		}
 	}
 	@PostMapping("/{id}/cancel")
-	boolean cancel (int id) {
+	boolean cancel (@PathVariable int id) {
 		Payment payment = Algorithm.<Payment>find(paymentTable, a->a.id == id);
 		if (payment != null && payment.history.get(payment.history.size() - 1).status == Invoice.Status.WAITING_CONFIRMATION) {
 			payment.history.add(new Record (Invoice.Status.CANCELLED, "Cancelled"));
@@ -61,7 +66,7 @@ public class PaymentController implements BasicGetController <Payment>{
 		}
 	}
 	@PostMapping("/{id}/submit")
-	boolean submit (int id, String receipt) {
+	boolean submit (@PathVariable int id, String receipt) {
 		Payment payment = Algorithm.<Payment>find(paymentTable, a->a.id == id);
 		if (payment != null && payment.history.get(payment.history.size() - 1).status == Invoice.Status.ON_PROGRESS && payment.shipment.receipt.isBlank() == true) {
 			payment.shipment.receipt = receipt;
@@ -72,7 +77,42 @@ public class PaymentController implements BasicGetController <Payment>{
 			return false;
 		}
 	}
-	private static boolean timekeeper (Payment payment) {
-		return Jmart.paymentTimeKeeper(payment);
+	@GetMapping("/{id}/buyerpayment")
+	List <Payment> getPaymentById (@PathVariable int id, int page, int pageSize){
+		return Algorithm.<Payment>paginate(paymentTable, page,pageSize, a ->a.buyerId==id);
 	}
+	@GetMapping("/{id}/storepayment")
+	List <Payment> getPaymentByProduct (@PathVariable int id, int page, int pageSize){
+		List <Product> storeProduct = Algorithm.<Product>collect(ProductController.productTable, a->a.accountId==id);
+		List <Payment> storePayment = new ArrayList <Payment>();
+		for (Payment payment : paymentTable) {
+			for (Product product : storeProduct) {
+				if (payment.productId == product.id) {
+					storePayment.add(payment);
+				}
+			}
+		}
+		return storePayment;
+	}
+	
+    public static boolean timekeeper (Payment payment) {
+    		Date date = new Date();
+        	long difftime = payment.history.get(payment.history.size() - 1).date.getTime() - date.getTime();
+        	long diff =	TimeUnit.MILLISECONDS.toMillis(difftime);
+    	if (payment.history.get(payment.history.size() - 1).status == Invoice.Status.WAITING_CONFIRMATION && diff >WAITING_CONF_LIMIT_MS ) {
+    		payment.history.add(new Payment.Record(Invoice.Status.FAILED, "Pengiriman gagal"));
+    	}
+    	else if (payment.history.get(payment.history.size() - 1).status == Invoice.Status.ON_PROGRESS && diff >ON_PROGRESS_LIMIT_MS) {
+    		payment.history.add(new Payment.Record(Invoice.Status.FAILED, "Pengiriman gagal"));
+    	}
+    	else if (payment.history.get(payment.history.size() - 1).status == Invoice.Status.ON_DELIVERY && diff >ON_DELIVERY_LIMIT_MS) {
+    		payment.history.add(new Payment.Record(Invoice.Status.DELIVERED, "Pengiriman berhasil"));
+    	
+    	}
+    	else if (payment.history.get(payment.history.size() - 1).status == Invoice.Status.ON_PROGRESS && diff >DELIVERED_LIMIT_MS) {
+    		payment.history.add(new Payment.Record(Invoice.Status.FINISHED, "Pengiriman berhasil"));
+    		
+    	}	
+    	return true;
+    }
 }

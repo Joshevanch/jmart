@@ -22,28 +22,22 @@ public class ObjectPoolThread<T> extends Thread{
 	public void run() {
 		while (this.exitSignal == false) {
 			for (T a: this.objectPool) {
-				System.out.println(this.routine.apply(a));
-				while (this.routine.apply(a) != true) {
-					try {
-						this.wait();
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
+				while (this.routine.apply(a) != true);
 				if (routine.apply(a) == true) {
 					objectPool.remove(a);
 				}
-				while (this.size() == 0) {
-					try {
-						this.wait();
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+				synchronized (this) {
+					while (this.size() == 0) {
+						try {
+							this.wait();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
-				}
-				if (this.size() != 0) {
-					this.notify();
+					if (this.size() != 0) {
+						this.notify();
+					}
 				}
 				
 			}
