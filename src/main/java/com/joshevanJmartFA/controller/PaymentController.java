@@ -43,7 +43,7 @@ public class PaymentController implements BasicGetController <Payment>{
 		Product product = Algorithm.<Product>find(ProductController.productTable, a-> a.id == productId);
 		Payment payment = new Payment (buyerId, productId, productCount, new Shipment (shipmentAddress, 0, shipmentPlan, null));
 		double price = productCount*payment.getTotalPay(product);
-		if (account != null && product != null && account.balance >= price) {
+		if (account != null && product != null && account.balance >= price && product.accountId != buyerId) {
 			account.balance = account.balance - price;
 			payment.history.add(new Record (Invoice.Status.WAITING_CONFIRMATION, "Waiting Confirmation"));
 			paymentTable.add(payment);
@@ -68,7 +68,7 @@ public class PaymentController implements BasicGetController <Payment>{
 	@PostMapping("/{id}/submit")
 	boolean submit (@PathVariable int id, String receipt) {
 		Payment payment = Algorithm.<Payment>find(paymentTable, a->a.id == id);
-		if (payment != null && payment.history.get(payment.history.size() - 1).status == Invoice.Status.ON_PROGRESS && payment.shipment.receipt.isBlank() == true) {
+		if (payment != null && payment.history.get(payment.history.size() - 1).status == Invoice.Status.WAITING_CONFIRMATION && receipt.isBlank()== false) {
 			payment.shipment.receipt = receipt;
 			payment.history.add(new Record (Invoice.Status.ON_DELIVERY, "On Delivery"));
 			return true;
@@ -78,13 +78,15 @@ public class PaymentController implements BasicGetController <Payment>{
 		}
 	}
 	@GetMapping("/{id}/buyerpayment")
-	List <Payment> getPaymentById (@PathVariable int id, int page, int pageSize){
+	List <Payment> getPaymentById (@PathVariable int id, @RequestParam int page, @RequestParam int pageSize){
 		return Algorithm.<Payment>paginate(paymentTable, page,pageSize, a ->a.buyerId==id);
 	}
 	@GetMapping("/{id}/storepayment")
-	List <Payment> getPaymentByProduct (@PathVariable int id, int page, int pageSize){
+	List <Payment> getPaymentByProduct (@PathVariable int id, @RequestParam int page, @RequestParam int pageSize){
 		List <Product> storeProduct = Algorithm.<Product>collect(ProductController.productTable, a->a.accountId==id);
-		List <Payment> storePayment = new ArrayList <Payment>();
+		List <Payment> storePayment  = new ArrayList <Payment>();
+		List <Payment> storePayment2 = new ArrayList <Payment>();
+		int i = 0;
 		for (Payment payment : paymentTable) {
 			for (Product product : storeProduct) {
 				if (payment.productId == product.id) {
@@ -92,7 +94,13 @@ public class PaymentController implements BasicGetController <Payment>{
 				}
 			}
 		}
-		return storePayment;
+		for (Payment b : storePayment) {
+			if (i>= ((page)*pageSize) && i<((page+1)*pageSize)) {
+				storePayment2.add(b);
+			}
+			i ++;
+}
+    	return storePayment2;
 	}
 	
     public static boolean timekeeper (Payment payment) {
