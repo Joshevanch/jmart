@@ -1,6 +1,10 @@
 package com.joshevanJmartFA;
 
-
+/**
+ * Enumeration of product category
+ * @author Joshevan
+ *
+ */
 public enum ProductCategory
 {
     BOOK,

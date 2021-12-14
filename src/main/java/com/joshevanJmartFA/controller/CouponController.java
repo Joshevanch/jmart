@@ -7,19 +7,49 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/coupon")
+/**
+ 
+ * This class will be the coupon controller between back end and front end
+ * @author Joshevan
+ *
+ */
 public class CouponController implements BasicGetController <Coupon> {
-	public static @JsonAutowired(filepath = "D:\\Tugas\\Semester 3\\Pemrograman Berorientasi Objek\\Praktikum\\jmart\\src\\main\\java\\com\\joshevanJmartFA\\a\\b\\c\\coupon.json", value = Coupon.class) JsonTable<Coupon> couponTable;
+	/**
+	 * Coupon Table from Json Table in the local directory
+	 */
+	public static @JsonAutowired(filepath = "JSON\\coupon.json", value = Coupon.class) JsonTable<Coupon> couponTable;
+	/**
+	 * Getter method for Coupon Json Table
+	 */
 	public JsonTable <Coupon> getJsonTable(){
 		return CouponController.couponTable;
 	}
+	/**
+	 * This method checks coupon used condition from front end
+	 * @param id coupon id
+	 * @return coupon used condition
+	 */
 	@GetMapping("/{id}/isUsed")
 	boolean isUsed (int id) {
 		return Algorithm.<Coupon>find(couponTable, a -> a.id == id).isUsed();
 	}
+	/**
+	 * This method checks whether coupon can be applied or not from front end 
+	 * @param id coupon id
+	 * @param price product price
+	 * @param discount product discount
+	 * @return coupon can be applied or not
+	 */
 	@GetMapping("/{id}/canApply")
 	boolean canApply (int id, double price, double discount) {
 		return Algorithm.<Coupon>find(couponTable, a -> a.id == id).canApply(price, discount);
 	}
+	/**
+	 * This method collects available  coupon from front end
+	 * @param page Page number
+	 * @param pageSize Number of object
+	 * @return available coupon
+	 */
 	@GetMapping("/getAvailable")
 	List<Coupon> getAvailable (@RequestParam(defaultValue = "5")int page, @RequestParam(defaultValue = "5")int pageSize){
 		List<Coupon> availableList = Algorithm.<Coupon>collect(couponTable, coupon ->coupon.isUsed()==false);

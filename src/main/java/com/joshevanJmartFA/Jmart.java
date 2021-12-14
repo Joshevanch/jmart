@@ -14,8 +14,17 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
+/**
+ * This class will be the executed class
+ * @author Joshevan
+ *
+ */
 public class Jmart
 {
+	/**
+	 * Main method, run spring application
+	 * @param args arguments
+	 */
     public static void main (String [] args) {
     	JsonDBEngine.Run(Jmart.class);
     	SpringApplication.run(Jmart.class, args);
