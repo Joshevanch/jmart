@@ -13,12 +13,12 @@ import java.util.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
 /**
  * This class will be the executed class
  * @author Joshevan
  *
  */
+@SpringBootApplication
 public class Jmart
 {
 	/**

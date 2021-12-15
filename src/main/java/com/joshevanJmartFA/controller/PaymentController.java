@@ -10,13 +10,13 @@ import com.joshevanJmartFA.*;
 import com.joshevanJmartFA.Payment.Record;
 import com.joshevanJmartFA.dbjson.*;
 
-@RestController
-@RequestMapping("/payment")
 /**
- * This class will be the payment controller between back end and front end
+ * This class will be the {@link Payment} controller between back end and front end
  * @author Joshevan
  *
  */
+@RestController
+@RequestMapping("/payment")
 public class PaymentController implements BasicGetController <Payment>{
 	/**
 	 * Delivered constant time
@@ -37,7 +37,7 @@ public class PaymentController implements BasicGetController <Payment>{
 	/**
 	 * Payment Table from Json Table in the local directory
 	 */
-	public static @JsonAutowired(filepath = "JSON\\payment.json", value = Payment.class) JsonTable<Payment> paymentTable;
+	public static @JsonAutowired(filepath = "D:\\Tugas\\Semester 3\\Pemrograman Berorientasi Objek\\Praktikum\\jmart\\JSON\\payment.json", value = Payment.class) JsonTable<Payment> paymentTable;
 	/**
 	 * pool thread for multi threading
 	 */

@@ -5,6 +5,11 @@ import java.util.regex.Matcher;
  * balance
  */
 import java.util.regex.Pattern;
+/**
+ * This class stores user store information, such as store name, address, phone number, balance
+ * @author Joshevan
+ * @version 1.0
+ */
 public class Store
 {
 	/**

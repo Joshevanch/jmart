@@ -90,7 +90,7 @@ public class Coupon extends Serializable
         return false;
     }
     /**
-     * enumeration type of coupon
+     * Enumeration type of coupon
      * @author Joshevan
      *
      */

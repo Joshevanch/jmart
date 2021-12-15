@@ -6,18 +6,18 @@ import com.joshevanJmartFA.*;
 import com.joshevanJmartFA.dbjson.JsonAutowired;
 import com.joshevanJmartFA.dbjson.JsonTable;
 
-@RestController
-@RequestMapping("/product")
 /**
- * This class will be the product controller between back end and front end
+ * This class will be the {@link Product} controller between back end and front end
  * @author Joshevan
  *
  */
+@RestController
+@RequestMapping("/product")
 public class ProductController implements BasicGetController<Product> {
 	/**
 	 * Product Table from Json Table in the local directory
 	 */
-	public static @JsonAutowired(filepath = "JSON\\Product.json", value = Product.class) JsonTable<Product> productTable;
+	public static @JsonAutowired(filepath = "D:\\Tugas\\Semester 3\\Pemrograman Berorientasi Objek\\Praktikum\\jmart\\JSON\\Product.json", value = Product.class) JsonTable<Product> productTable;
 	/**
 	 * Getter method for Product Json Table
 	 */

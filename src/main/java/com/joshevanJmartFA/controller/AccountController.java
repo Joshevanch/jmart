@@ -9,13 +9,13 @@ import java.util.regex.Pattern;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-@RestController
-@RequestMapping("/account")
 /**
- * This class will be the account controller between back end and front end
+ * This class will be the {@link Account} controller between back end and front end
  * @author Joshevan
  *
  */
+@RestController
+@RequestMapping("/account")
 public class AccountController implements BasicGetController <Account>
 {
 	/**
@@ -38,7 +38,7 @@ public class AccountController implements BasicGetController <Account>
 	/**
 	 * Account Table from Json Table in the local directory
 	 */
-	public static @JsonAutowired(filepath = "JSON\\account.json", value = Account.class) JsonTable<Account> accountTable;
+	public static @JsonAutowired(filepath = "D:\\Tugas\\Semester 3\\Pemrograman Berorientasi Objek\\Praktikum\\jmart\\JSON\\account.json", value = Account.class) JsonTable<Account> accountTable;
 	/**
 	 * Getter method for Account Json Table
 	 */
